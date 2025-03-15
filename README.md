@@ -7,6 +7,8 @@ git clone https://github.com/arnabsom/github-pr-list.git
 
 cd github-pr-list
 
+npm install
+
 
 
 ## Getting Started
