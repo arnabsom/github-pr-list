@@ -1,5 +1,13 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Clone the repo
+
+
+git clone https://github.com/arnabsom/github-pr-list.git
+cd github-pr-list
+
+
+
 ## Getting Started
 
 First, run the development server:
