@@ -1,21 +1,27 @@
 'use client';
-import React from 'react'
-import { useEffect, useState } from "react";
-import PRList from "./components/PRList";
-import Filter from "./components/Filter";
-import { fetchPRs } from "./api/github";
-import { PullRequest } from "./types";
+import React, { useEffect, useState } from 'react';
+import { fetchPRs } from './api/github';
+import { PRRequest } from './types';
 
 export default function Home() {
-  const [pullRequests, setPullRequests] = useState<PullRequest[]>([]);
+  const [prrequests, setPullRequests] = useState<PRRequest[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedLabel, setSelectedLabel] = useState<string>("");
+  const [searchText, setSearchText] = useState<string>("");
 
   useEffect(() => {
     fetchPRs()
       .then((data) => {
-        setPullRequests(data);
+        if (data.length > 0) {
+          const prData: PRRequest[] = data.map((pr: any) => ({
+            id: pr.id,
+            title: pr.title,
+            html_url: pr.html_url,
+            created_at: pr.created_at,
+            labels: pr.labels.map((l: any) => l.name),
+          }));
+          setPullRequests(prData);
+        }
         setLoading(false);
       })
       .catch((err) => {
@@ -24,21 +30,77 @@ export default function Home() {
       });
   }, []);
 
-  const uniqueLabels = [
-    ...new Set(pullRequests.flatMap((pr) => pr.labels.map((label) => label.name))),
-  ];
+  const handleSearch = () => {
+    // Optionally apply additional search logic here
+  };
 
-  const filteredPRs = selectedLabel
-    ? pullRequests.filter((pr) => pr.labels.some((label) => label.name === selectedLabel))
-    : pullRequests;
+  const filteredPRs = searchText
+    ? prrequests.filter((pr) =>
+        pr.labels.some((label) => label.toLowerCase().includes(searchText.toLowerCase()))
+      )
+    : prrequests;
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">GitHub PR Viewer</h1>
-      {loading && <p>Loading...</p>}
-      {error && <p className="text-red-500">Error: {error}</p>}
-      <Filter uniqueLabels={uniqueLabels} selectedLabel={selectedLabel} setSelectedLabel={setSelectedLabel} />
-      <PRList pullRequests={filteredPRs} />
+    <div className="container mx-auto p-6">
+      <h1 className="text-3xl font-bold mb-6 text-center">GitHub PR Viewer</h1>
+
+      <div className="flex flex-col sm:flex-row gap-4 mb-6 justify-between items-center">
+        <input
+          type="text"
+          placeholder="Search by Label..."
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+          className="w-full sm:w-1/2 p-2 border rounded-xl shadow-sm focus:outline-none focus:ring focus:ring-blue-400"
+        />
+        <button
+          onClick={handleSearch}
+          className="px-4 py-2 rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition"
+        >
+          Search
+        </button>
+      </div>
+
+      {loading && <p className="text-center text-gray-600">Loading PRs...</p>}
+      {error && <p className="text-center text-red-500">Error: {error}</p>}
+
+      <div className="overflow-x-auto">
+        <table className="min-w-full text-sm text-left border rounded-xl overflow-hidden">
+          <thead className="bg-gray-100 text-gray-700">
+            <tr>
+              <th className="px-4 py-2">ID</th>
+              <th className="px-4 py-2">Title</th>
+              <th className="px-4 py-2">Labels</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredPRs.map((pr) => (
+              <tr key={pr.id} className="border-t hover:bg-gray-50">
+                <td className="px-4 py-2">{pr.id}</td>
+                <td className="px-4 py-2 text-blue-600 hover:underline">
+                  <a href={pr.html_url} target="_blank" rel="noopener noreferrer">{pr.title}</a>
+                </td>
+                <td className="px-4 py-2">
+                  {pr.labels.map((label, index) => (
+                    <span
+                      key={index}
+                      className="inline-block bg-blue-100 text-blue-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded-full"
+                    >
+                      {label}
+                    </span>
+                  ))}
+                </td>
+              </tr>
+            ))}
+            {filteredPRs.length === 0 && !loading && (
+              <tr>
+                <td colSpan={3} className="text-center px-4 py-4 text-gray-500">
+                  No PRs found.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
