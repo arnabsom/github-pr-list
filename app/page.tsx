@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { fetchPRs } from './api/github';
 import { PRRequest } from './types';
 
+
 export default function Home() {
   const [prrequests, setPullRequests] = useState<PRRequest[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -13,7 +14,7 @@ export default function Home() {
     fetchPRs()
       .then((data) => {
         if (data.length > 0) {
-          const prData: PRRequest[] = data.map((pr: any) => ({
+          const prData: PRRequest[] = data.map((pr: PRRequest) => ({
             id: pr.id,
             title: pr.title,
             html_url: pr.html_url,
@@ -32,11 +33,12 @@ export default function Home() {
 
   const handleSearch = () => {
     // Optionally apply additional search logic here
+
   };
 
   const filteredPRs = searchText
     ? prrequests.filter((pr) =>
-        pr.labels.some((label) => label.toLowerCase().includes(searchText.toLowerCase()))
+        pr.labels.some((label:string) => label.toLowerCase().includes(searchText.toLowerCase()))
       )
     : prrequests;
 
@@ -84,6 +86,7 @@ export default function Home() {
                     <span
                       key={index}
                       className="inline-block bg-blue-100 text-blue-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded-full"
+                      data-testid="label-pill"
                     >
                       {label}
                     </span>
