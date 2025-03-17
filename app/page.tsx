@@ -51,6 +51,7 @@ export default function Home() {
           type="text"
           placeholder="Search by Label..."
           value={searchText}
+          aria-label="search-input"
           onChange={(e) => setSearchText(e.target.value)}
           className="w-full sm:w-1/2 p-2 border rounded-xl shadow-sm focus:outline-none focus:ring focus:ring-blue-400"
         />
