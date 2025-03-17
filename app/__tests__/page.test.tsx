@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import Home from "../page";
 
-jest.mock("../../app/api/github", () => ({
+jest.mock("../api/github", () => ({
     fetchPRs: jest.fn(() =>
     Promise.resolve([
     {
@@ -31,20 +31,20 @@ test("renders header", async () => {
 });
 
 test("displays PRs from API", async () => {
-    render("tr");
+    render(<Home/>);
     const rows = await screen.findAllByTestId("pr-row");
     expect(rows.length).toBe(2);
 });
 
 test("search input filters PRs by label", async () => {
-    render("input");
+    render(<Home/>);
     const input = screen.getByTestId("search-input") as HTMLInputElement;
     fireEvent.change(input, { target: { value: "bug" } });
     expect(input.value).toBe("bug");
 });
 
 test("renders loading initially", () => {
-    render("div");
+    render(<Home/>);
     expect(screen.getByTestId("loading")).toBeInTheDocument();
 });
 });

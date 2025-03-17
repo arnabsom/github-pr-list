@@ -10,8 +10,5 @@ module.exports = {
     }]
   },
   testMatch: ['**/__tests__/**/*.(test|spec).(ts|tsx)'],
-  moduleFileExtensions: ['ts', 'tsx', 'js'],
-  moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/$1'
-  }
+  moduleFileExtensions: ['ts', 'tsx', 'js']
 };
