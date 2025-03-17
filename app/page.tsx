@@ -19,7 +19,7 @@ export default function Home() {
             title: pr.title,
             html_url: pr.html_url,
             created_at: pr.created_at,
-            labels: pr.labels.map((l: Label) => l.name),
+            labels: pr.labels.map((l: any) => l.name),
           }));
           setPullRequests(prData);
         }
