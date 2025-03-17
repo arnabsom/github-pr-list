@@ -9,13 +9,5 @@ export interface PRRequest {
     title: string;
     html_url: string;
     created_at: string;
-    labels: Label[];
-}
-
-export interface PRRequestMap {
-    id: number;
-    title: string;
-    html_url: string;
-    created_at: string;
     labels: string[];
 }
