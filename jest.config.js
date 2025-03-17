@@ -5,10 +5,19 @@ module.exports = {
   testEnvironment: 'jsdom',
   setupFilesAfterEnv: ['<rootDir>/setupTests.ts'],
   transform: {
-    '^.+\\.(ts|tsx)$': ['ts-jest', {
-      isolatedModules: true,
-    }]
+    '^.+\\.(js|jsx)$': 'babel-jest',
+    '^.+\\.(js|ts|tsx)$': ['ts-jest'
+  ]
   },
+  transformIgnorePatterns: [
+  "\\node_modules\\@microsoft\\sp-dialog",
+  "\\node_modules\\@microsoft\\sp-core-library",
+  "node_modules/(?!sp-core-library)",
+  "node_modules/(?!@microsoft/sp-core-library)"
+],
   testMatch: ['**/__tests__/**/*.(test|spec).(ts|tsx)'],
-  moduleFileExtensions: ['ts', 'tsx', 'js']
+  moduleFileExtensions: ['ts', 'tsx', 'js'],
+  moduleNameMapper: {
+    '^@/(.*)$': "/node_modules/(?!lodash-es/.*)"
+  }
 };
